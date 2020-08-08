@@ -1,0 +1,4 @@
+README 
+
+link to data, with more information:
+https://www.kaggle.com/osmi/mental-health-in-tech-survey
