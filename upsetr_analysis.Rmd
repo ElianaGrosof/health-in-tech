@@ -1,0 +1,40 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+data = read.csv('survey_cleaner1.csv', na.strings="Not Applicable")
+#df = subset(data, select = -c(X) )
+data
+
+#one hot encode
+install.packages("mltools")
+library(mltools)
+library(data.table)
+newdata <- one_hot(as.data.table(data))
+newdata
+library(UpSetR)
+upset(newdata, order.by="freq", main.bar.color = "#995ee1", sets.bar.color = "#995ee1", group.by = 'degree') 
+```
+
+
+Intepreting the chart:
+I have about 1200 data points, about 988 (almost 1000) of them are male.
+The fact that 475 men said that:
+1. they would not bring up a mental health issue with a potential employer in an interview (mental_health_interview_No),
+2. worked for a tech company (tech_company_Yes), 
+3. had not heard of or observed negative consequences for coworkers with mental health conditions in their workplace (obs_consequence_No),
+4. and were not self_employed (self_employed_No) - this variable being a little redundant with the tech company variable -
+is significant because it reveals that a significant plurality of men (48%) and over a third of respondents responded the same way. 
+
+If you add in the 132 people who were not men who also responded the same way to those 4 questions, then you end up nearly HALF of the entire dataset
+answering those questions the same way (48%). 
+
+It seems to me that at tech companies, people felt that they would not bring up mental health in an interview yet had 
+never heard of or observed negative consequences for coworkers with mental health in their workplace, which suggests to me that 
+it's something people aren't open with in their workplace.
+
+Questions: 
+- I wonder if those could be predictors, and also what the people who don't fit this profile look like. 
+- I wonder how the distribution is for women

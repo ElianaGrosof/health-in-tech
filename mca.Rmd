@@ -1,0 +1,71 @@
+---
+title: "mca"
+author: "Eliana Grosof"
+date: "8/10/2020"
+output: ioslides_presentation
+---
+
+Code came from/modified from http://www.gastonsanchez.com/visually-enforced/how-to/2012/10/13/MCA-in-R/
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo = TRUE}
+data = read.csv('survey_cleaner.csv', na.strings="Not applicable")
+head(data)
+```
+
+```{r}
+#drop age from analysis for now
+df = subset(data, select = -c(X, Age) )
+df
+
+#make cats for later 
+cats = apply(df, 2, function(x) nlevels(as.factor(x)))
+cats
+# apply MCA
+mca1 = MCA(df, graph = FALSE)
+# list of results
+mca1
+
+mca1$eig
+
+mca1$var
+```
+
+```{r}
+# data frame with variable coordinates
+mca1_vars_df = data.frame(mca1$var$coord, Variable = rep(names(cats), cats))
+
+# data frame with observation coordinates
+mca1_obs_df = data.frame(mca1$ind$coord)
+
+# plot of variable categories
+ggplot(data=mca1_vars_df, 
+       aes(x = Dim.1, y = Dim.2, label = rownames(mca1_vars_df))) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_text(aes(colour=Variable)) +
+  ggtitle("MCA plot of variables using R package FactoMineR")
+```
+
+So it's messy af, but it seems like country, and maybe even state, might have something to do with the variance. 
+But it's really, really spread out and each dimension appears to equally explain the data. 
+What if I take out my dependent variable, treatment?
+```{r}
+#drop age from analysis for now
+df = subset(data, select = -c(X, Age, treatment) )
+#make cats for later 
+cats = apply(df, 2, function(x) nlevels(as.factor(x)))
+cats
+# apply MCA
+mca1 = MCA(df, graph = FALSE)
+# list of results
+mca1
+mca1$eig
+
+```
+
+It literally doesn't change anything. Cool. Well, I should look into techniques for predicting stuff when there is no one clear predictor. Good to know.
