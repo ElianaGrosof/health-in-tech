@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
-data = read.csv('survey_cleaner1.csv', na.strings="Not Applicable")
+data = read.csv('data/survey_cleaner1.csv', na.strings="Not Applicable")
 #df = subset(data, select = -c(X) )
 data
 
